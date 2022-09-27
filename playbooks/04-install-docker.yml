@@ -1,0 +1,60 @@
+---
+- name: Install Docker
+  hosts: docker
+  tasks:
+  - name: Remove buildah & podman
+    become: yes
+    yum:
+      name: "{{ item }}"
+      state: removed
+    loop:
+    - biuldah
+    - podman
+
+  - name: Install yum utils
+    become: yes
+    yum:
+      name: "{{ item }}"
+      state: latest
+    loop:
+    - yum-utils
+      
+  - name: Add Docker repo
+    become: yes
+    get_url:
+      url: https://download.docker.com/linux/centos/docker-ce.repo
+      dest: /etc/yum.repos.d/docker-ce.repo
+
+  - name: Install git, Docker & modules
+    become: yes
+    package:
+      name: "{{ item }}"
+      state: latest
+    loop:
+    - docker-ce
+    - containerd.io
+    - docker-compose-plugin
+    - python-pip
+    - device-mapper-persistent-data
+    - lvm2
+    - git
+
+  - name: Install Python modules dor Docker
+    pip:
+      name:
+      - docker
+      - docker-compose
+
+  - name: Start Docker service
+    become: yes
+    service:
+      name: docker
+      state: started
+      enabled: yes
+
+  - name: Add user to docker group
+    become: yes
+    user:
+      name: admins
+      groups: docker
+      append: yes

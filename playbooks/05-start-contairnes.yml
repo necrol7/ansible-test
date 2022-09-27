@@ -1,0 +1,14 @@
+---
+- name: clone from gir and start contairners
+  hosts: docker
+  tasks:
+    - name: clone from repo
+      git:
+        repo: 'https://github.com/necrol7/docker-test.git'
+        dest: ~/docker-adminer
+        clone: yes
+
+    - name: compose up -d
+      docker_compose:
+        project_src: ~/docker-adminer/
+      register: output

@@ -1,0 +1,33 @@
+---
+- name: Setting firewalld
+  hosts: all 
+  become: yes
+  tasks:
+  - name: "enable firewalld service"
+    service:
+      name: firewalld
+      state: started
+      enabled: yes
+
+  - name: "disable service from zone"
+    firewalld:
+      immediate: yes
+      permanent: yes
+      zone: public
+      service: "{{ item }}"
+      state: disabled
+    loop:
+      - dhcpv6-client
+      - cockpit
+
+  - name: "add services to zone"
+    firewalld:
+      immediate: yes
+      permanent: yes
+      zone: public
+      service: "{{ item }}"
+      state: enabled
+    loop:
+      - http
+      - https
+      - ssh

@@ -1,0 +1,18 @@
+---
+- name: Setting hostnames
+  hosts: all
+  tasks:
+    - name: Change the hostname to our standard
+      hostname:
+        name="{{ inventory_hostname }}"
+      when:
+        ansible_fqdn != ansible_ssh_host
+      become: yes
+
+    - name: restart machine
+      command: shutdown -r now "Ansible updates triggered"
+      async: 0
+      poll: 0
+      ignore_errors: True
+      when:
+        reboot is defined

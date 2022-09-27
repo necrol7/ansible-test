@@ -1,0 +1,11 @@
+---
+- name: Setting timezone & enable NTP-client
+  hosts: all
+  become: yes
+  tasks:
+  - name: Set timezone to Europe/Kiev
+    timezone: 
+      name: Europe/Kiev
+
+  - name: Enable ntp-client
+    command: timedatectl set-ntp true
