@@ -6,9 +6,10 @@
     become: yes
     yum:
       name: "{{ item }}"
-      state: removed
+      state: absent
+      autoremove: yes
     loop:
-    - biuldah
+    - buildah
     - podman
 
   - name: Install yum utils
